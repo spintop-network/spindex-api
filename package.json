@@ -17,9 +17,7 @@
   },
   "homepage": "https://github.com/spintop-network/spindex-api#readme",
   "dependencies": {
-    "axios": "^0.27.2",
     "cors": "^2.8.5",
-    "express": "^4.18.1",
-    "node-fetch": "^3.2.4"
+    "express": "^4.18.1"
   }
 }
