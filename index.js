@@ -9,6 +9,7 @@ const ethers = require("ethers");
 const abiLP = require("./stores/ABI").abiLP;
 const abiToken = require("./stores/ABI").abiToken;
 const abiFarm = require("./stores/ABI").abiFarm;
+require("dotenv").config();
 
 // promisify to use in async function
 const readdir = util.promisify(fs.readFile);
@@ -33,9 +34,7 @@ setInterval(() => {
 // connect to provider at start
 let provider;
 const connectNode = async () => {
-  provider = new ethers.providers.JsonRpcProvider(
-    "https://fragrant-silent-snowflake.bsc.quiknode.pro/1c75461abd6819322507a060e5f05fa910e03446/"
-  );
+  provider = new ethers.providers.JsonRpcProvider(process.env.BINANCE_RPC);
 };
 connectNode();
 
