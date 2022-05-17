@@ -55,11 +55,11 @@ setInterval(async () => {
 
 const fetchData = async (database) => {
   const spinContract = new ethers.Contract(addr.token.spin, abiToken, provider);
-  database.totalMinted = ethers.utils.formatUnits(
-    await spinContract.totalSupply()
+  database.totalMinted = parseFloat(
+    ethers.utils.formatUnits(await spinContract.totalSupply())
   );
-  database.totalBurned = ethers.utils.formatUnits(
-    await spinContract.totalBurned()
+  database.totalBurned = parseFloat(
+    ethers.utils.formatUnits(await spinContract.totalBurned())
   );
 
   // bnb price
