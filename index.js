@@ -7,6 +7,7 @@ const ethers = require("ethers");
 require("dotenv").config();
 
 const fetchData = require("./routes/Dashboard");
+const fetchFarms = require("./routes/Farms");
 
 // promisify to use in async function
 const readdir = util.promisify(fs.readFile);
@@ -40,9 +41,17 @@ app.get("/getAddr", (req, res) => {
 setInterval(async () => {
   let database = await readdir("./stores/data.json");
   database = JSON.parse(database);
-  let database_ = await fetchData(database);
-  fs.writeFileSync("./stores/data.json", JSON.stringify(database_));
-}, 20000);
+  database = await fetchData(database);
+
+  let farms = await readdir("./stores/Farms.json");
+  farms = JSON.parse(farms);
+  for (let i = 0; i < farms.farms.length; i++) {
+    farms = await fetchFarms(farms, i, database);
+  }
+
+  fs.writeFileSync("./stores/data.json", JSON.stringify(database));
+  fs.writeFileSync("./stores/Farms.json", JSON.stringify(farms));
+}, 120000);
 
 app.get("/", (req, res) => {
   res.send("Spindex Temporary API");
