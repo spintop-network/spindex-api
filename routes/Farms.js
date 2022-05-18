@@ -39,6 +39,7 @@ setInterval(() => {
 }, 10000);
 
 const fetchFarms = async (farm, id, database) => {
+  console.log("Fetching ", farm.farms[id].title);
   if (farm.farms[id].type != ("farm" || "pool")) {
     return farm;
   }
