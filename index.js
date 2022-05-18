@@ -47,7 +47,7 @@ const farmsLoop = async (farms, database) => {
       });
     });
     await Promise.all(promises);
-    return farms;
+    fs.writeFileSync("./stores/Farms.json", JSON.stringify(farms));
   } catch (err) {
     console.log("Error: ", err);
   }
@@ -56,14 +56,11 @@ const farmsLoop = async (farms, database) => {
 setInterval(async () => {
   let database = await readdir("./stores/data.json");
   database = JSON.parse(database);
-  database = await fetchData(database);
+  await fetchData(database);
 
   let farms = await readdir("./stores/Farms.json");
   farms = JSON.parse(farms);
-  farms = await farmsLoop(farms, database);
-
-  fs.writeFileSync("./stores/data.json", JSON.stringify(database));
-  fs.writeFileSync("./stores/Farms.json", JSON.stringify(farms));
+  await farmsLoop(farms, database);
 }, 20000);
 
 app.get("/", (req, res) => {

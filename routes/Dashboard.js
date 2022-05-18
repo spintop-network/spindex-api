@@ -229,7 +229,7 @@ const fetchData = async (database) => {
     return database;
   } catch (err) {
     console.log("error: ", err);
-    return database;
+    fs.writeFileSync("./stores/data.json", JSON.stringify(database));
   }
 };
 
