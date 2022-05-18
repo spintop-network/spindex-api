@@ -129,27 +129,28 @@ const fetchFarms = async (farm, id, database) => {
       farm.farms[id].totalStaked * database.spinPrice;
   } else if (farm.farms[id].type == "vault") {
     const vaultContract = new ethers.Contract(
-      farm.addrVault,
+      farm.farms[id].addrVault,
       abiVault,
       provider
     );
     const farmBalance = ethers.utils.formatUnits(
       await farmContract.totalStaked()
     );
-    farm.tvlVault =
+    farm.farms[id].tvlVault =
       ethers.utils.formatUnits(await vaultContract.balance()) *
       database.spinPrice;
-    farm.tvlFarm = farmBalance * database.spinPrice;
+    farm.farms[id].tvlFarm = farmBalance * database.spinPrice;
     const rewardPerSecond = ethers.utils.formatUnits(
       await farmContract.rewardRate(),
-      farm.decimal
+      farm.farms[id].decimal
     );
     const rewardPerYear = rewardPerSecond * 60 * 60 * 24 * 365;
     const rewardValue = rewardPerYear * database.spinPrice;
-    farm.apr = (rewardValue / farm.tvl) * 100;
-    farm.apy = ((1 + farm.apr / 100 / 365) ** 365 - 1) * 100;
-    farm.dailyApr = farm.apr / 365;
-    farm.totalStaked = farm.tvlVault;
+    farm.farms[id].apr = (rewardValue / farm.farms[id].tvl) * 100;
+    farm.farms[id].apy =
+      ((1 + farm.farms[id].apr / 100 / 365) ** 365 - 1) * 100;
+    farm.farms[id].dailyApr = farm.farms[id].apr / 365;
+    farm.farms[id].totalStaked = farm.farms[id].tvlVault;
   }
   if (farm.farms[id].limit) {
     let pFinish = (await farmContract.periodFinish()).toNumber();
