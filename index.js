@@ -8,6 +8,7 @@ require("dotenv").config();
 
 const fetchData = require("./routes/Dashboard");
 const fetchFarms = require("./routes/Farms");
+const { time } = require("console");
 
 // promisify to use in async function
 const readdir = util.promisify(fs.readFile);
@@ -38,6 +39,20 @@ app.get("/getAddr", (req, res) => {
   });
 });
 
+const farmsLoop = async (farms, database) => {
+  try {
+    let promises = farms.farms.map(async (farm, index) => {
+      return fetchFarms(farms, index, database).then(async (data) => {
+        farms.farms[index] = data.farms[index];
+      });
+    });
+    await Promise.all(promises);
+    return farms;
+  } catch (err) {
+    console.log("Error: ", err);
+  }
+};
+
 setInterval(async () => {
   let database = await readdir("./stores/data.json");
   database = JSON.parse(database);
@@ -45,13 +60,11 @@ setInterval(async () => {
 
   let farms = await readdir("./stores/Farms.json");
   farms = JSON.parse(farms);
-  for (let i = 0; i < farms.farms.length; i++) {
-    farms = await fetchFarms(farms, i, database);
-  }
+  farms = await farmsLoop(farms, database);
 
   fs.writeFileSync("./stores/data.json", JSON.stringify(database));
   fs.writeFileSync("./stores/Farms.json", JSON.stringify(farms));
-}, 120000);
+}, 20000);
 
 app.get("/", (req, res) => {
   res.send("Spindex Temporary API");
