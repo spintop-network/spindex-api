@@ -11,7 +11,7 @@ let polygonProvider;
 const connectNodes = async () => {
   try {
     binanceProvider = new ethers.providers.JsonRpcProvider(
-      process.env.BINANCE_RPC
+      "https://bsc-dataseed.binance.org/"
     );
   } catch (err) {
     console.log("Error: ", err);
