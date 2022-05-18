@@ -16,7 +16,9 @@ setInterval(() => {
 // connect to provider at start
 let provider;
 const connectNode = async () => {
-  provider = new ethers.providers.JsonRpcProvider(process.env.BINANCE_RPC);
+  provider = new ethers.providers.JsonRpcProvider(
+    "https://bsc-dataseed.binance.org/"
+  );
 };
 connectNode();
 
