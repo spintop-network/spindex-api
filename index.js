@@ -79,7 +79,3 @@ app.get("/", (req, res) => {
 httpsServer.listen(443, () => {
   console.log("HTTPS Server running on port 443");
 });
-
-// app.listen(PORT, () =>
-//   console.log(`Server is running on : http://localhost:${PORT}`)
-// );
