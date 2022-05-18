@@ -16,7 +16,7 @@ const readdir = util.promisify(fs.readFile);
 // set express&cors
 const app = express();
 app.use(cors());
-const PORT = 5000;
+const PORT = 5001;
 
 app.get("/getData", (req, res) => {
   fs.readFile("./stores/data.json", "utf8", (err, data) => {
