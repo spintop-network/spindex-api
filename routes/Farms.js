@@ -8,7 +8,11 @@ const abiFarm = require("../stores/ABI").abiFarm;
 // connect to provider at start
 let provider;
 const connectNode = async () => {
-  provider = new ethers.providers.JsonRpcProvider(process.env.BINANCE_RPC);
+  try {
+    provider = new ethers.providers.JsonRpcProvider(process.env.BINANCE_RPC);
+  } catch (err) {
+    console.log("Error: ", err);
+  }
 };
 connectNode();
 
@@ -28,7 +32,7 @@ const fetchFarms = async (farm, id, database) => {
   if (farm.farms[id].chainID != 56) {
     return farm;
   }
-  console.log("Fetching ", farm.farms[id].title);
+  // console.log("Fetching ", farm.farms[id].title);
   const farmContract = new ethers.Contract(
     farm.farms[id].addrFarm,
     abiFarm,
@@ -117,7 +121,7 @@ const fetchFarms = async (farm, id, database) => {
   if (farm.farms[id].limit) {
     farm.farms[id].periodFinish = await farmContract.periodFinish();
   }
-  console.log("Fetched ", farm.farms[id].title);
+  // console.log("Fetched ", farm.farms[id].title);
   return farm;
 };
 
