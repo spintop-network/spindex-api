@@ -18,13 +18,6 @@ const readdir = util.promisify(fs.readFile);
 const app = express();
 app.use(cors());
 // serve the API with signed certificate on 443 (SSL/HTTPS) port
-const httpsServer = https.createServer(
-  {
-    key: fs.readFileSync("/etc/letsencrypt/live/bluechip.wtf/privkey.pem"),
-    cert: fs.readFileSync("/etc/letsencrypt/live/bluechip.wtf/fullchain.pem"),
-  },
-  app
-);
 
 app.get("/getData", (req, res) => {
   fs.readFile("./stores/data.json", "utf8", (err, data) => {
@@ -75,6 +68,14 @@ setInterval(async () => {
 app.get("/", (req, res) => {
   res.send("Spindex Temporary API");
 });
+
+const httpsServer = https.createServer(
+  {
+    key: fs.readFileSync("/etc/letsencrypt/live/bluechip.wtf/privkey.pem"),
+    cert: fs.readFileSync("/etc/letsencrypt/live/bluechip.wtf/fullchain.pem"),
+  },
+  app
+);
 
 httpsServer.listen(443, () => {
   console.log("HTTPS Server running on port 443");
