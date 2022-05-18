@@ -119,9 +119,9 @@ const fetchFarms = async (farm, id, database) => {
       farm.farms[id].totalStaked * database.spinPrice;
   }
   if (farm.farms[id].limit) {
-    farm.farms[id].periodFinish = await farmContract.periodFinish();
+    let pFinish = (await farmContract.periodFinish()).toNumber();
+    farm.farms[id].periodFinish = pFinish;
   }
-  // console.log("Fetched ", farm.farms[id].title);
   return farm;
 };
 
