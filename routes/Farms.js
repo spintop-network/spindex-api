@@ -6,15 +6,25 @@ const abiToken = require("../stores/ABI").abiToken;
 const abiFarm = require("../stores/ABI").abiFarm;
 
 // connect to provider at start
-let provider;
-const connectNode = async () => {
+let binanceProvider;
+let polygonProvider;
+const connectNodes = async () => {
   try {
-    provider = new ethers.providers.JsonRpcProvider(process.env.BINANCE_RPC);
+    binanceProvider = new ethers.providers.JsonRpcProvider(
+      process.env.BINANCE_RPC
+    );
+  } catch (err) {
+    console.log("Error: ", err);
+  }
+  try {
+    polygonProvider = new ethers.providers.JsonRpcProvider(
+      process.env.POLYGON_RPC
+    );
   } catch (err) {
     console.log("Error: ", err);
   }
 };
-connectNode();
+connectNodes();
 
 // dynamic read for static file
 let addr;
@@ -29,10 +39,11 @@ setInterval(() => {
 }, 10000);
 
 const fetchFarms = async (farm, id, database) => {
-  if (farm.farms[id].chainID != 56) {
+  if (farm.farms[id].type != ("farm" || "pool")) {
     return farm;
   }
-  // console.log("Fetching ", farm.farms[id].title);
+  const provider =
+    farm.farms[id].chainID == 56 ? binanceProvider : polygonProvider;
   const farmContract = new ethers.Contract(
     farm.farms[id].addrFarm,
     abiFarm,

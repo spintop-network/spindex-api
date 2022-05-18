@@ -3,6 +3,7 @@ const cors = require("cors");
 const fs = require("fs");
 const util = require("util");
 const ethers = require("ethers");
+const https = require("https");
 
 require("dotenv").config();
 
@@ -16,7 +17,14 @@ const readdir = util.promisify(fs.readFile);
 // set express&cors
 const app = express();
 app.use(cors());
-const PORT = 5001;
+// serve the API with signed certificate on 443 (SSL/HTTPS) port
+const httpsServer = https.createServer(
+  {
+    key: fs.readFileSync("/etc/letsencrypt/live/bluechip.wtf/privkey.pem"),
+    cert: fs.readFileSync("/etc/letsencrypt/live/bluechip.wtf/fullchain.pem"),
+  },
+  app
+);
 
 app.get("/getData", (req, res) => {
   fs.readFile("./stores/data.json", "utf8", (err, data) => {
@@ -68,6 +76,10 @@ app.get("/", (req, res) => {
   res.send("Spindex Temporary API");
 });
 
-app.listen(PORT, () =>
-  console.log(`Server is running on : http://localhost:${PORT}`)
-);
+httpsServer.listen(443, () => {
+  console.log("HTTPS Server running on port 443");
+});
+
+// app.listen(PORT, () =>
+//   console.log(`Server is running on : http://localhost:${PORT}`)
+// );
