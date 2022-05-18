@@ -24,6 +24,7 @@ const abiLP = require("../stores/ABI").abiLP;
 const abiToken = require("../stores/ABI").abiToken;
 const abiFarm = require("../stores/ABI").abiFarm;
 
+// async operations in queue
 const fetchData = async (database) => {
   try {
     const spinContract = new ethers.Contract(
@@ -226,10 +227,9 @@ const fetchData = async (database) => {
         poolCreoTotalStaked) *
         database.spinPrice;
 
-    return database;
+    fs.writeFileSync("./stores/data.json", JSON.stringify(database));
   } catch (err) {
     console.log("error: ", err);
-    fs.writeFileSync("./stores/data.json", JSON.stringify(database));
   }
 };
 

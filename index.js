@@ -39,6 +39,7 @@ app.get("/getAddr", (req, res) => {
   });
 });
 
+// async operations in parallel
 const farmsLoop = async (farms, database) => {
   try {
     let promises = farms.farms.map(async (farm, index) => {
