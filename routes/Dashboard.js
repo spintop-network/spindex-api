@@ -336,11 +336,13 @@ const fetchPolygonTVL = async (spinPrice) => {
     addr.pool.spin_polygon,
     abiFarm,
     polygonProvider
-  )
-  const spinPolygonTotalStaked = await spinPolygonPool.totalStaked();
-  const spinPolygonTVL = spinPolygonTotalStaked * spinPrice
+  );
+  const spinPolygonTotalStaked = parseInt(
+    ethers.utils.formatUnits(await spinPolygonPool.totalStaked())
+  );
+  const spinPolygonTVL = spinPolygonTotalStaked * spinPrice;
 
-  return spinMaticTVL + spinTRYTVL + spinPolygonTVL
+  return spinMaticTVL + spinTRYTVL + spinPolygonTVL;
 };
 
 module.exports = fetchData;
