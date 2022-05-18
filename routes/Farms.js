@@ -146,7 +146,7 @@ const fetchFarms = async (farm, id, database) => {
     );
     const rewardPerYear = rewardPerSecond * 60 * 60 * 24 * 365;
     const rewardValue = rewardPerYear * database.spinPrice;
-    farm.farms[id].apr = (rewardValue / farm.farms[id].tvl) * 100;
+    farm.farms[id].apr = (rewardValue / farm.farms[id].tvlFarm) * 100;
     farm.farms[id].apy =
       ((1 + farm.farms[id].apr / 100 / 365) ** 365 - 1) * 100;
     farm.farms[id].dailyApr = farm.farms[id].apr / 365;
