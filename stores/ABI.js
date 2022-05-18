@@ -1557,3 +1557,4 @@ const abiVault = [
 exports.abiLP = abiLP;
 exports.abiToken = abiToken;
 exports.abiFarm = abiFarm;
+exports.abiVault = abiVault;
