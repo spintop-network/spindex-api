@@ -40,7 +40,6 @@ setInterval(() => {
 }, 10000);
 
 const fetchFarms = async (farm, id, database) => {
-  console.log("Fetching ", farm.farms[id].title);
   const provider =
     farm.farms[id].chainID == 56 ? binanceProvider : polygonProvider;
   const farmContract = new ethers.Contract(

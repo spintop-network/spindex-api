@@ -14,13 +14,25 @@ setInterval(() => {
 }, 10000);
 
 // connect to provider at start
-let provider;
-const connectNode = async () => {
-  provider = new ethers.providers.JsonRpcProvider(
-    "https://bsc-dataseed.binance.org/"
-  );
+let binanceProvider;
+let polygonProvider;
+const connectNodes = async () => {
+  try {
+    binanceProvider = new ethers.providers.JsonRpcProvider(
+      "https://bsc-dataseed.binance.org/"
+    );
+  } catch (err) {
+    console.log("Error: ", err);
+  }
+  try {
+    polygonProvider = new ethers.providers.JsonRpcProvider(
+      process.env.POLYGON_RPC
+    );
+  } catch (err) {
+    console.log("Error: ", err);
+  }
 };
-connectNode();
+connectNodes();
 
 const abiLP = require("../stores/ABI").abiLP;
 const abiToken = require("../stores/ABI").abiToken;
@@ -32,7 +44,7 @@ const fetchData = async (database) => {
     const spinContract = new ethers.Contract(
       addr.token.spin,
       abiToken,
-      provider
+      binanceProvider
     );
     database.totalMinted = parseFloat(
       ethers.utils.formatUnits(await spinContract.totalSupply())
@@ -45,7 +57,7 @@ const fetchData = async (database) => {
     const bnbBusdContract = new ethers.Contract(
       addr.lp.bnbBusd,
       abiLP,
-      provider
+      binanceProvider
     );
     const bnbBusdReserves = await bnbBusdContract.getReserves();
     const bnbBusdReserve_0 = ethers.utils.formatUnits(bnbBusdReserves[0]);
@@ -56,7 +68,7 @@ const fetchData = async (database) => {
     const bnbSpinContract = new ethers.Contract(
       addr.lp.spinBnb,
       abiLP,
-      provider
+      binanceProvider
     );
     const bnbSpinReserves = await bnbSpinContract.getReserves();
     const bnbSpinReserve_0 = ethers.utils.formatUnits(bnbSpinReserves[0]);
@@ -65,55 +77,56 @@ const fetchData = async (database) => {
     database.marketCap =
       (database.totalMinted - database.totalBurned) * database.spinPrice;
 
+    const polygonTVL = await fetchPolygonTVL(database.spinPrice);
+
     // farms tvl
     const farmSpinBnb = new ethers.Contract(
       addr.farm.spinBnb,
       abiFarm,
-      provider
+      binanceProvider
     );
     const farmSpinSfund = new ethers.Contract(
       addr.farm.spinSfund,
       abiFarm,
-      provider
+      binanceProvider
     );
     const farmSpinAot = new ethers.Contract(
       addr.farm.spinAot,
       abiFarm,
-      provider
+      binanceProvider
     );
     const farmSpinKing = new ethers.Contract(
       addr.farm.spinKing,
       abiFarm,
-      provider
+      binanceProvider
     );
     const farmSpinDnxc = new ethers.Contract(
       addr.farm.spinDnxc,
       abiFarm,
-      provider
+      binanceProvider
     );
     const farmSpinMts = new ethers.Contract(
       addr.farm.spinMts,
       abiFarm,
-      provider
+      binanceProvider
     );
     const farmSpinSkill = new ethers.Contract(
       addr.farm.spinSkill,
       abiFarm,
-      provider
+      binanceProvider
     );
     const farmSpinPXP = new ethers.Contract(
       addr.farm.spinPXP,
       abiFarm,
-      provider
+      binanceProvider
     );
     const farmSpinCreo = new ethers.Contract(
       addr.farm.spinCreo,
       abiFarm,
-      provider
+      binanceProvider
     );
 
     const farmSpinBnbTotalStaked = await farmSpinBnb.totalStaked();
-
     const farmSpinSfundTotalStaked = await farmSpinSfund.totalStaked();
     const farmSpinAotTotalStaked = await farmSpinAot.totalStaked();
     const farmSpinKingTotalStaked = await farmSpinKing.totalStaked();
@@ -170,15 +183,51 @@ const fetchData = async (database) => {
     );
 
     // pools tvl
-    const poolSpin = new ethers.Contract(addr.pool.spin, abiFarm, provider);
-    const poolSfund = new ethers.Contract(addr.pool.sfund, abiFarm, provider);
-    const poolAot = new ethers.Contract(addr.pool.aot, abiFarm, provider);
-    const poolKing = new ethers.Contract(addr.pool.king, abiFarm, provider);
-    const poolDnxc = new ethers.Contract(addr.pool.dnxc, abiFarm, provider);
-    const poolMts = new ethers.Contract(addr.pool.mts, abiFarm, provider);
-    const poolSkill = new ethers.Contract(addr.pool.skill, abiFarm, provider);
-    const poolPXP = new ethers.Contract(addr.pool.pxp, abiFarm, provider);
-    const poolCreo = new ethers.Contract(addr.pool.creo, abiFarm, provider);
+    const poolSpin = new ethers.Contract(
+      addr.pool.spin,
+      abiFarm,
+      binanceProvider
+    );
+    const poolSfund = new ethers.Contract(
+      addr.pool.sfund,
+      abiFarm,
+      binanceProvider
+    );
+    const poolAot = new ethers.Contract(
+      addr.pool.aot,
+      abiFarm,
+      binanceProvider
+    );
+    const poolKing = new ethers.Contract(
+      addr.pool.king,
+      abiFarm,
+      binanceProvider
+    );
+    const poolDnxc = new ethers.Contract(
+      addr.pool.dnxc,
+      abiFarm,
+      binanceProvider
+    );
+    const poolMts = new ethers.Contract(
+      addr.pool.mts,
+      abiFarm,
+      binanceProvider
+    );
+    const poolSkill = new ethers.Contract(
+      addr.pool.skill,
+      abiFarm,
+      binanceProvider
+    );
+    const poolPXP = new ethers.Contract(
+      addr.pool.pxp,
+      abiFarm,
+      binanceProvider
+    );
+    const poolCreo = new ethers.Contract(
+      addr.pool.creo,
+      abiFarm,
+      binanceProvider
+    );
 
     const poolSpinTotalStaked = parseInt(
       ethers.utils.formatUnits(await poolSpin.totalStaked())
@@ -209,6 +258,7 @@ const fetchData = async (database) => {
     );
 
     database.tvl =
+      polygonTVL +
       spinBnbTVL +
       spinSfundTVL +
       spinAotTVL +
@@ -236,7 +286,7 @@ const fetchData = async (database) => {
 };
 
 const fetchFarmTVL = async (addr_, farmBalance, spinPrice) => {
-  const lpContract = new ethers.Contract(addr_, abiLP, provider);
+  const lpContract = new ethers.Contract(addr_, abiLP, binanceProvider);
   const lpTotalSupply = await lpContract.totalSupply();
   const token_0 = await lpContract.token0();
   const reserves = await lpContract.getReserves();
@@ -244,6 +294,53 @@ const fetchFarmTVL = async (addr_, farmBalance, spinPrice) => {
   const reserve_1 = ethers.utils.formatUnits(reserves[1]);
   const reserve = token_0 == addr.token.spin ? reserve_0 : reserve_1;
   return parseInt(reserve * 2 * spinPrice * (farmBalance / lpTotalSupply));
+};
+
+const fetchPolygonFarmTVL = async (addr_, farmBalance, spinPrice) => {
+  const lpContract = new ethers.Contract(addr_, abiLP, polygonProvider);
+  const lpTotalSupply = await lpContract.totalSupply();
+  const token_0 = await lpContract.token0();
+  const reserves = await lpContract.getReserves();
+  const reserve_0 = ethers.utils.formatUnits(reserves[0]);
+  const reserve_1 = ethers.utils.formatUnits(reserves[1]);
+  const reserve = token_0 == addr.token.spin ? reserve_0 : reserve_1;
+  return parseInt(reserve * 2 * spinPrice * (farmBalance / lpTotalSupply));
+};
+
+const fetchPolygonTVL = async (spinPrice) => {
+  const spinMatic = new ethers.Contract(
+    addr.farm.spinMatic,
+    abiFarm,
+    polygonProvider
+  );
+  const farmSpinMaticTotalStaked = await spinMatic.totalStaked();
+  const spinMaticTVL = await fetchPolygonFarmTVL(
+    addr.lp.spinMatic,
+    farmSpinMaticTotalStaked,
+    spinPrice
+  );
+
+  const spinTRY = new ethers.Contract(
+    addr.farm.spinTRY,
+    abiFarm,
+    polygonProvider
+  );
+  const farmSpinTRYTotalStaked = await spinTRY.totalStaked();
+  const spinTRYTVL = await fetchPolygonFarmTVL(
+    addr.lp.spinTRY,
+    farmSpinTRYTotalStaked,
+    spinPrice
+  );
+
+  const spinPolygonPool = new ethers.Contract(
+    addr.pool.spin_polygon,
+    abiFarm,
+    polygonProvider
+  )
+  const spinPolygonTotalStaked = await spinPolygonPool.totalStaked();
+  const spinPolygonTVL = spinPolygonTotalStaked * spinPrice
+
+  return spinMaticTVL + spinTRYTVL + spinPolygonTVL
 };
 
 module.exports = fetchData;
