@@ -2,7 +2,6 @@ const ethers = require("ethers");
 const fs = require("fs");
 
 const abiLP = require("../stores/ABI").abiLP;
-const abiToken = require("../stores/ABI").abiToken;
 const abiFarm = require("../stores/ABI").abiFarm;
 const abiVault = require("../stores/ABI").abiVault;
 
