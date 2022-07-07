@@ -228,6 +228,11 @@ const fetchData = async (database) => {
       abiFarm,
       binanceProvider
     );
+    const poolTrivia = new ethers.Contract(
+      addr.pool.trivia,
+      abiFarm,
+      binanceProvider
+    );
 
     const poolSpinTotalStaked = parseInt(
       ethers.utils.formatUnits(await poolSpin.totalStaked())
@@ -256,6 +261,9 @@ const fetchData = async (database) => {
     const poolCreoTotalStaked = parseInt(
       ethers.utils.formatUnits(await poolCreo.totalStaked())
     );
+    const poolTriviaTotalStaked = parseInt(
+      ethers.utils.formatUnits(await poolTrivia.totalStaked())
+    );
 
     database.tvl =
       polygonTVL +
@@ -276,7 +284,8 @@ const fetchData = async (database) => {
         poolMtsTotalStaked +
         poolSkillTotalStaked +
         poolPXPTotalStaked +
-        poolCreoTotalStaked) *
+        poolCreoTotalStaked +
+        poolTriviaTotalStaked) *
         database.spinPrice;
 
     fs.writeFileSync("./stores/data.json", JSON.stringify(database));
