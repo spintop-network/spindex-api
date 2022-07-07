@@ -69,8 +69,8 @@
       "totalStaked": 815959.9177922064
     },
     {
-      "title": "TRIVIA - Please remove tokens!",
-      "name": "trivians_old",
+      "title": "TRIVIA",
+      "name": "trivians",
       "limit": true,
       "image": "/images/farm/spin-trivia.svg",
       "chainID": 56,
