@@ -125,6 +125,11 @@ const fetchData = async (database) => {
       abiFarm,
       binanceProvider
     );
+    const farmSpinTrivia = new ethers.Contract(
+      addr.farm.spinTrivia,
+      abiFarm,
+      binanceProvider
+    );
 
     const farmSpinBnbTotalStaked = await farmSpinBnb.totalStaked();
     const farmSpinSfundTotalStaked = await farmSpinSfund.totalStaked();
@@ -135,6 +140,7 @@ const fetchData = async (database) => {
     const farmSpinSkillTotalStaked = await farmSpinSkill.totalStaked();
     const farmSpinPXPTotalStaked = await farmSpinPXP.totalStaked();
     const farmSpinCreoTotalStaked = await farmSpinCreo.totalStaked();
+    const farmSpinTriviaTotalStaked = await farmSpinTrivia.totalStaked();
 
     const spinBnbTVL = await fetchFarmTVL(
       addr.lp.spinBnb,
@@ -179,6 +185,11 @@ const fetchData = async (database) => {
     const spinCreoTVL = await fetchFarmTVL(
       addr.lp.spinCreo,
       farmSpinCreoTotalStaked,
+      database.spinPrice
+    );
+    const spinTriviaTVL = await fetchFarmTVL(
+      addr.lp.spinTrivia,
+      farmSpinTriviaTotalStaked,
       database.spinPrice
     );
 
@@ -276,6 +287,7 @@ const fetchData = async (database) => {
       spinSkillTVL +
       spinPXPTVL +
       spinCreoTVL +
+      spinTriviaTVL +
       (poolSpinTotalStaked +
         poolSfundTotalStaked +
         poolAotTotalStaked +

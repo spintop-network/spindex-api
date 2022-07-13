@@ -1,4 +1,4 @@
-const production = true;
+const production = false;
 const port = 5000;
 
 const express = require("express");
