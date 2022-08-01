@@ -94,6 +94,7 @@
     },
     {
       "title": "SPIN-TRIVIA",
+      "name": "trivians",
       "limit": true,
       "image": "/images/farm/spin-trivia.svg",
       "chainID": 56,
