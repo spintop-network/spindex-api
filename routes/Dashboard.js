@@ -11,7 +11,7 @@ const fetchAddr = () => {
 fetchAddr();
 setInterval(() => {
   fetchAddr();
-}, 10000);
+}, 20000);
 
 // connect to provider at start
 let binanceProvider;
@@ -19,7 +19,7 @@ let polygonProvider;
 const connectNodes = async () => {
   try {
     binanceProvider = new ethers.providers.JsonRpcProvider(
-      "https://bsc-dataseed.binance.org/"
+      "https://bsc-dataseed1.binance.org/"
     );
   } catch (err) {
     console.log("Error: ", err);
