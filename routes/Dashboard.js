@@ -18,6 +18,7 @@ let binanceProvider;
 let polygonProvider;
 const connectNodes = async () => {
   try {
+    console.log('Binance node connected');
     binanceProvider = new ethers.providers.JsonRpcProvider(
       "https://bsc-dataseed1.binance.org/"
     );
@@ -46,11 +47,15 @@ const fetchData = async (database) => {
       abiToken,
       binanceProvider
     );
+    const [totalSupply, totalBurned] = await Promise.all([
+      spinContract.totalSupply(),
+      spinContract.totalBurned(),
+    ]);
     database.totalMinted = parseFloat(
-      ethers.utils.formatUnits(await spinContract.totalSupply())
+      ethers.utils.formatUnits(totalSupply.add(totalBurned))
     );
     database.totalBurned = parseFloat(
-      ethers.utils.formatUnits(await spinContract.totalBurned())
+      ethers.utils.formatUnits(totalBurned)
     );
 
     // bnb price

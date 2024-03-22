@@ -78,19 +78,6 @@ app.get("/", (req, res) => {
   res.send("Spindex Temporary API");
 });
 
-if (production) {
-  const httpsServer = https.createServer(
-    {
-      key: fs.readFileSync("/etc/letsencrypt/live/bluechip.wtf/privkey.pem"),
-      cert: fs.readFileSync("/etc/letsencrypt/live/bluechip.wtf/fullchain.pem"),
-    },
-    app
-  );
-  httpsServer.listen(443, () => {
-    console.log("HTTPS Server running on port 443");
-  });
-} else {
   app.listen(port, () => {
     console.log(`Test app listening at http://localhost:${port}`);
   });
-}
