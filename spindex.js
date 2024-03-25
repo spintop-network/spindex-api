@@ -53,7 +53,7 @@ app.get("/totalSupply", (req, res) => {
   res.send(totalSupply_.toString());
 });
 app.get("/circSupply", (req, res) => {
-  const circulating_ = totalSupply - totalBurned;
+  const circulating_ = totalSupply;
   res.send(circulating_.toString());
 });
 app.get("/getData", (req, res) => {
