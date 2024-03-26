@@ -17,5 +17,21 @@ const fetchTotalBurned = async () => {
   );
   return result;
 };
-module.exports.fetchTotalSupply = fetchTotalSupply;
-module.exports.fetchTotalBurned = fetchTotalBurned;
+
+const fetchCirculatingSupply = async () => {
+  try {
+    const totalSupply = await contract.totalSupply();
+    const anyswapBalance = await contract.balanceOf("0x171a9377C5013bb06Bca8CfE22B9C007f2C319F1");
+    const spinStakedBalance = await contract.balanceOf("0x3B5095a84a5902E963BF6e302fcdBC38771B0C8c");
+    return parseFloat(ethers.utils.formatEther(totalSupply.sub(anyswapBalance).sub(spinStakedBalance)));
+  } catch (e) {
+    console.error(e)
+    return 0
+  }
+}
+
+module.exports = {
+  fetchTotalSupply,
+  fetchTotalBurned,
+  fetchCirculatingSupply
+};

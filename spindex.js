@@ -10,8 +10,7 @@ require("dotenv").config();
 
 const fetchData = require("./routes/Dashboard");
 const fetchFarms = require("./routes/Farms");
-const fetchTotalSupply = require("./routes/Supply").fetchTotalSupply;
-const fetchTotalBurned = require("./routes/Supply").fetchTotalBurned;
+const {fetchTotalSupply, fetchTotalBurned, fetchCirculatingSupply} = require("./routes/Supply");
 
 const readdir = util.promisify(fs.readFile);
 const app = express();
@@ -19,6 +18,7 @@ app.use(cors());
 
 let totalSupply = 0;
 let totalBurned = 0;
+let circSupply = 0;
 
 const farmsLoop = async (farms, database) => {
   try {
@@ -46,15 +46,14 @@ setInterval(async () => {
 setInterval(async () => {
   totalSupply = await fetchTotalSupply();
   totalBurned = await fetchTotalBurned();
+  circSupply = await fetchCirculatingSupply();
 }, 20000);
 
 app.get("/totalSupply", (req, res) => {
-  const totalSupply_ = totalSupply;
-  res.send(totalSupply_.toString());
+  res.send(totalSupply.toString());
 });
 app.get("/circSupply", (req, res) => {
-  const circulating_ = totalSupply;
-  res.send(circulating_.toString());
+  res.send(circSupply.toString());
 });
 app.get("/getData", (req, res) => {
   fs.readFile("./stores/data.json", "utf8", (err, data) => {
