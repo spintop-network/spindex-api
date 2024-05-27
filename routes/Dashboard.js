@@ -20,7 +20,7 @@ const connectNodes = async () => {
   try {
     console.log('Binance node connected');
     binanceProvider = new ethers.providers.JsonRpcProvider(
-      "https://bsc-mainnet.nodereal.io/v1/0883115137a94cf39de9cc37ff1236d3"
+      "https://bsc-dataseed1.defibit.io"
     );
   } catch (err) {
     console.log("Error: ", err);
@@ -305,7 +305,7 @@ const fetchData = async (database) => {
         poolTriviaTotalStaked) *
         database.spinPrice;
 
-    fs.writeFileSync("./stores/data.json", JSON.stringify(database));
+    fs.writeFileSync("./stores/data.json", JSON.stringify(database, null, 2));
   } catch (err) {
     console.log("error: ", err);
   }

@@ -28,7 +28,7 @@ const farmsLoop = async (farms, database) => {
       });
     });
     await Promise.all(promises);
-    fs.writeFileSync("./stores/Farms.json", JSON.stringify(farms));
+    fs.writeFileSync("./stores/Farms.json", JSON.stringify(farms, null, 2));
   } catch (err) {
     console.log("Error: ", err);
   }

@@ -2,7 +2,7 @@ const ethers = require("ethers");
 const abiToken = require("../stores/ABI").abiToken;
 const spinAddress = "0x6aa217312960a21adbde1478dc8cbcf828110a67";
 const bscProvider = new ethers.providers.JsonRpcProvider(
-  "https://bsc-mainnet.nodereal.io/v1/0883115137a94cf39de9cc37ff1236d3"
+  "https://bsc-dataseed1.defibit.io"
 );
 const contract = new ethers.Contract(spinAddress, abiToken, bscProvider);
 const fetchTotalSupply = async () => {
