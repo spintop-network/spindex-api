@@ -118,8 +118,14 @@ const fetchFarms = async (farm, id, database) => {
     );
     const rewardPerYear = rewardPerSecond * 60 * 60 * 24 * 365;
     const rewardValue = rewardPerYear * farm.farms[id].rewardPrice;
-    farm.farms[id].apr = (rewardValue / farm.farms[id].tvl) * 100;
-    farm.farms[id].dailyApr = farm.farms[id].apr / 365;
+
+    if (farm.farms[id].title === 'CLASH') {
+      farm.farms[id].apr = (rewardPerYear / farmBalance) * 100;
+      farm.farms[id].dailyApr = farm.farms[id].apr / 365;
+    } else {
+      farm.farms[id].apr = (rewardValue / farm.farms[id].tvl) * 100;
+      farm.farms[id].dailyApr = farm.farms[id].apr / 365;
+    }
     farm.farms[id].totalStaked = ethers.utils.formatUnits(
       await farmContract.totalStaked()
     );
@@ -154,6 +160,7 @@ const fetchFarms = async (farm, id, database) => {
     let pFinish = (await farmContract.periodFinish()).toNumber();
     farm.farms[id].periodFinish = pFinish;
   }
+  console.log(farm.farms[id])
   return farm;
 };
 
