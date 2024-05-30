@@ -160,7 +160,6 @@ const fetchFarms = async (farm, id, database) => {
     let pFinish = (await farmContract.periodFinish()).toNumber();
     farm.farms[id].periodFinish = pFinish;
   }
-  console.log(farm.farms[id])
   return farm;
 };
 
